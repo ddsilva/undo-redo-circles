@@ -1,5 +1,5 @@
-import './App.css'
 import { MouseEventHandler, useCallback, useEffect, useState } from 'react'
+import './App.css'
 
 type Coordinate = {
   x: number
@@ -13,6 +13,8 @@ const Circle = ({ x, y }: Coordinate) => (
 const App = () => {
   const [items, setItems] = useState<Coordinate[]>([])
   const [visibleItems, setVisibleItems] = useState<Coordinate[]>([])
+  const canUndo = !!visibleItems.length
+  const canRedo = visibleItems.length !== items.length
 
   const addItem: MouseEventHandler<HTMLDivElement> = ({
     clientX: x,
@@ -24,26 +26,22 @@ const App = () => {
   }
 
   const undo = useCallback(() => {
-    if (!visibleItems.length) return
-    setVisibleItems(visibleItems.slice(0, -1))
-  }, [visibleItems])
+    if (canUndo) setVisibleItems(visibleItems.slice(0, -1))
+  }, [canUndo, visibleItems])
 
   const redo = useCallback(() => {
-    if (visibleItems.length === items.length) return
-    setVisibleItems([...visibleItems, items[visibleItems.length]])
-  }, [items, visibleItems])
+    if (canRedo) setVisibleItems([...visibleItems, items[visibleItems.length]])
+  }, [canRedo, items, visibleItems])
 
   const keyDownHandler = useCallback(
     ({ metaKey, altKey, key, shiftKey }: KeyboardEvent) => {
       const shouldHandle = metaKey || altKey
 
-      if (shouldHandle && key === 'z') {
-        if (shiftKey) {
-          redo()
-        } else {
-          undo()
-        }
-      }
+      if (!shouldHandle || key !== 'z') return
+
+      const action = shiftKey ? redo : undo
+
+      action()
     },
     [redo, undo]
   )
@@ -61,8 +59,12 @@ const App = () => {
         ))}
       </div>
       <div className="buttons-wrapper">
-        <button onMouseDown={undo}>Undo</button>
-        <button onMouseDown={redo}>Redo</button>
+        <button onMouseDown={undo} disabled={!canUndo}>
+          Undo
+        </button>
+        <button onMouseDown={redo} disabled={!canRedo}>
+          Redo
+        </button>
       </div>
     </>
   )
