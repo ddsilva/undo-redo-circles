@@ -35,9 +35,7 @@ const App = () => {
 
   const keyDownHandler = useCallback(
     ({ metaKey, altKey, key, shiftKey }: KeyboardEvent) => {
-      const shouldHandle = metaKey || altKey
-
-      if (!shouldHandle || key !== 'z') return
+      if (!(metaKey || altKey) || key !== 'z') return
 
       const action = shiftKey ? redo : undo
 
