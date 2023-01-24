@@ -6,10 +6,6 @@ type Coordinate = {
   y: number
 }
 
-const Circle = ({ x, y }: Coordinate) => (
-  <div className="circle" style={{ top: y, left: x }} />
-)
-
 const App = () => {
   const [items, setItems] = useState<Coordinate[]>([])
   const [visibleItems, setVisibleItems] = useState<Coordinate[]>([])
@@ -53,7 +49,11 @@ const App = () => {
     <>
       <div className="circle-wrapper" onMouseDown={addItem}>
         {visibleItems.map(({ x, y }, i) => (
-          <Circle x={x} y={y} key={`${x}-${y}-${i}`} />
+          <div
+            className="circle"
+            style={{ top: y, left: x }}
+            key={`${x}-${y}-${i}`}
+          />
         ))}
       </div>
       <div className="buttons-wrapper">
