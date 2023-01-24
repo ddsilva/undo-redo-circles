@@ -14,7 +14,7 @@ const App = () => {
   const [items, setItems] = useState<Coordinate[]>([])
   const [visibleItems, setVisibleItems] = useState<Coordinate[]>([])
 
-  const addCircle: MouseEventHandler<HTMLDivElement> = ({
+  const addItem: MouseEventHandler<HTMLDivElement> = ({
     clientX: x,
     clientY: y,
   }) => {
@@ -55,7 +55,7 @@ const App = () => {
 
   return (
     <>
-      <div className="circle-wrapper" onMouseDown={addCircle}>
+      <div className="circle-wrapper" onMouseDown={addItem}>
         {visibleItems.map(({ x, y }, i) => (
           <Circle x={x} y={y} key={`${x}-${y}-${i}`} />
         ))}
